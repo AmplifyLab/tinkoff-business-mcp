@@ -56,7 +56,12 @@ function buildHeaders(
 ): Record<string, string> {
   const headers: Record<string, string> = {
     Accept: "application/json",
-    Authorization: `Bearer ${TINKOFF_BUSINESS_API_TOKEN}`
+    // Tinkoff Business API expects the raw token, not the standard
+    // `Bearer <token>` scheme — its header validator rejects the space.
+    // Non-null assert: the guard at the top of this module throws if the
+    // env var is unset, but TS doesn't propagate that narrowing across
+    // function boundaries.
+    Authorization: TINKOFF_BUSINESS_API_TOKEN!
   };
 
   if (body !== undefined) {
